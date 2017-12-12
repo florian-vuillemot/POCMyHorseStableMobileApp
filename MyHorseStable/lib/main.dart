@@ -13,6 +13,7 @@ class MainContainer extends StatelessWidget {
         length: windows.length,
         child: new Scaffold(
           appBar: new AppBar(
+            centerTitle: true,
             title: const Text('My horse stable'),
             bottom: new TabBar(
               isScrollable: true,
