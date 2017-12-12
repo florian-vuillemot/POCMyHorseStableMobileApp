@@ -1,122 +1,72 @@
 import 'package:flutter/material.dart';
+import 'Horses.dart';
+import 'LoadPicture.dart';
 
-class Horses extends StatelessWidget {
+/// Main container
+/// Show the title, top barred for navigate and window to show
+/// Control the user flow and create/destroy selected window's
+class MainContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final datas = data;
-
     return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: const Text('My horse stable'),
-        ),
-        body:
-          new ListView.builder(
-            itemBuilder: (BuildContext context, int index) => new EntryItem(datas[index]),
-            itemCount: datas.length,
+      home: new DefaultTabController(
+        length: windows.length,
+        child: new Scaffold(
+          appBar: new AppBar(
+            title: const Text('My horse stable'),
+            bottom: new TabBar(
+              isScrollable: true,
+              tabs: windows.map((Window choice) {
+                return new Tab(
+                  text: choice.title,
+                  icon: new Image.asset(choice.icon, width: 32.0, height: 32.0),
+                );
+              }).toList(),
+            ),
           ),
+          body: new TabBarView(
+            children: windows.map((Window choice) {
+              return new Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: new WindowShower(window: choice),
+              );
+            }).toList(),
+          ),
+        ),
       ),
     );
   }
 }
 
-// Care type and cares.
-class CareInfo {
-  const CareInfo(this.type, [this.cares = const <String>[]]);
-  final String type;
-  final List<String> cares;
+/// Different window to show with name's and icon.
+/// This appear in a top barred.
+/// User can navigate throw it and create window in fly
+class Window {
+  Window({ this.title, this.icon, this.widget });
+  final String title;
+  final String icon;
+  StatelessWidget widget;
 }
 
-// One entry in the multilevel list displayed by this app.
-class HorseInfo {
-  HorseInfo(this.name, [this.nextCare = const CareInfo("Next"), this.previousCare = const CareInfo("Previous")]);
-  final String name;
-  final CareInfo nextCare;
-  final CareInfo previousCare;
-}
-
-
-// The entire multilevel list displayed by this app.
-final List<HorseInfo> data = <HorseInfo>[
-  new HorseInfo('Horse1',
-    new CareInfo("Next", <String>['Next care 1', 'Next care 2']),
-    new CareInfo("Previous", <String>['Previous care 1', 'Previous care 2']),
-  ),
-  new HorseInfo('Horse2',
-    new CareInfo("Next"),
-    new CareInfo("Previous",<String>['Previous care 1.1', 'Previous care 2.1', "Previous again"]),
-  ),
+/// List of all window to show
+List<Window> windows = <Window>[
+  new Window(title: 'Chevaux', icon: 'images/horse.png', widget: new Horses()),
+  new Window(title: 'Professionnelles', icon: 'images/hammer.png', widget: new LoadPicture()),
+  new Window(title: 'Calendrier', icon: 'images/calendar.png', widget: new Horses()),
 ];
 
-// Displays one Entry. If the entry has children then it's displayed
-// with an ExpansionTile.
-class EntryItem extends StatelessWidget {
-  const EntryItem(this.entry);
-  final HorseInfo entry;
 
-  Widget _buildCare(String care){
-    return new ListTile(title: new Text(care));
-  }
-
-  Widget _buildCares(CareInfo careInfo){
-    return new ExpansionTile(
-        key: new PageStorageKey<CareInfo>(careInfo),
-        title: new Text(careInfo.type),
-        children: (careInfo.cares.isEmpty ? ["Aucun élément"] : careInfo.cares).map(_buildCare).toList()
-    );
-  }
-
-  Column buildButtonColumn(BuildContext context, IconData icon, String label) {
-    Color color = Theme.of(context).primaryColor;
-
-    return new Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        new Icon(icon, color: color),
-        new Container(
-          margin: const EdgeInsets.only(top: 8.0),
-          child: new Text(
-            label,
-            style: new TextStyle(
-              fontSize: 12.0,
-              fontWeight: FontWeight.w400,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTiles(HorseInfo root, BuildContext context) {
-    Widget buttonSection = new Container(
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            buildButtonColumn(context, Icons.visibility, 'Voir l\'animal'),
-            buildButtonColumn(context, Icons.add, 'Ajouter un soin'),
-            buildButtonColumn(context, Icons.event, 'Planning de l\'animal'),
-          ],
-        )
-    );
-
-    List<Widget> widgets = [root.nextCare, root.previousCare].map(_buildCares).toList();
-    widgets.add(buttonSection);
-
-    return new ExpansionTile(
-      key: new PageStorageKey<HorseInfo>(root),
-      title: new Text(root.name),
-      children: widgets
-    );
-  }
+/// Window container create on fly
+class WindowShower extends StatelessWidget {
+  const WindowShower({ Key key, this.window }) : super(key: key);
+  final Window window;
 
   @override
   Widget build(BuildContext context) {
-    return _buildTiles(entry, context);
+    return window.widget;
   }
 }
 
 void main() {
-  runApp(new Horses());
+  runApp(new MainContainer());
 }
