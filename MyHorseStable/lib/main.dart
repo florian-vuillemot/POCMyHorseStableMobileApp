@@ -2,37 +2,53 @@ import 'package:flutter/material.dart';
 import 'Horses.dart';
 import 'LoadPicture.dart';
 
-/// Main container
-/// Show the title, top barred for navigate and window to show
-/// Control the user flow and create/destroy selected window's
-class MainContainer extends StatelessWidget {
+/// Main container of application
+class MainContainer extends StatefulWidget {
+  @override
+  _MainContainerState createState() => new _MainContainerState();
+}
+
+/// Handle selected sub app choice by the user
+class _MainContainerState extends State<MainContainer> {
+  Window _selectedChoice = windows[0]; // The app's "state".
+
+  void _select(Window choice) {
+    setState(() { // Causes the app to rebuild with the new _selectedChoice.
+      _selectedChoice = choice;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new DefaultTabController(
-        length: windows.length,
-        child: new Scaffold(
-          appBar: new AppBar(
-            centerTitle: true,
-            title: const Text('My horse stable'),
-            bottom: new TabBar(
-              isScrollable: true,
-              tabs: windows.map((Window choice) {
-                return new Tab(
-                  text: choice.title,
-                  icon: new Image.asset(choice.icon, width: 32.0, height: 32.0),
-                );
-              }).toList(),
+      home: new Scaffold(
+        appBar: new AppBar(
+          title: const Text('My Horse Stable'),
+          actions: <Widget>[
+           new IconButton( // action button
+              icon: new Image.asset(windows[0].icon, width: 32.0, height: 32.0),
+              onPressed: () { _select(windows[0]); },
             ),
-          ),
-          body: new TabBarView(
-            children: windows.map((Window choice) {
-              return new Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: new WindowShower(window: choice),
-              );
-            }).toList(),
-          ),
+            new IconButton( // action button
+              icon: new Image.asset(windows[1].icon, width: 32.0, height: 32.0),
+              onPressed: () { _select(windows[1]); },
+            ),
+            new PopupMenuButton<Window>( // overflow menu
+              onSelected: _select,
+              itemBuilder: (BuildContext context) {
+                return windows.map((Window choice) {
+                  return new PopupMenuItem<Window>(
+                    value: choice,
+                    child: new Text(choice.title),
+                  );
+                }).toList();
+              },
+            ),
+          ],
+        ),
+        body: new Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _selectedChoice.widget //new MainContainer(choice: _selectedChoice),
         ),
       ),
     );
@@ -55,18 +71,6 @@ List<Window> windows = <Window>[
   new Window(title: 'Professionnelles', icon: 'images/hammer.png', widget: new LoadPicture()),
   new Window(title: 'Calendrier', icon: 'images/calendar.png', widget: new Horses()),
 ];
-
-
-/// Window container create on fly
-class WindowShower extends StatelessWidget {
-  const WindowShower({ Key key, this.window }) : super(key: key);
-  final Window window;
-
-  @override
-  Widget build(BuildContext context) {
-    return window.widget;
-  }
-}
 
 void main() {
   runApp(new MainContainer());
