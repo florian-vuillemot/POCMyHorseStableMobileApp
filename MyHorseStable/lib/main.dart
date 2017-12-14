@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Horses.dart';
 import 'LoadPicture.dart';
+import 'Horse.dart';
 
 /// Main container of application
 class MainContainer extends StatefulWidget {
@@ -47,7 +48,7 @@ class _MainContainerState extends State<MainContainer> {
           ],
         ),
         body: new Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(0.0),
           child: _selectedChoice.widget //new MainContainer(choice: _selectedChoice),
         ),
       ),
@@ -67,7 +68,7 @@ class Window {
 
 /// List of all window to show
 List<Window> windows = <Window>[
-  new Window(title: 'Chevaux', icon: 'images/horse.png', widget: new Horses()),
+  new Window(title: 'Chevaux', icon: 'images/horse.png', widget: new Horse()),
   new Window(title: 'Professionnelles', icon: 'images/hammer.png', widget: new LoadPicture()),
   new Window(title: 'Calendrier', icon: 'images/calendar.png', widget: new Horses()),
 ];
