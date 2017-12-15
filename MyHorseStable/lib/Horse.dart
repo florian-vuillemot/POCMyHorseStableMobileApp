@@ -89,6 +89,15 @@ const List<_HorseInfo> choices = const <_HorseInfo>[
   const _HorseInfo(title: 'Pension', icon: Icons.directions_railway),
 ];
 
+const List<_HorseInfo> ex = const <_HorseInfo>[
+  const _HorseInfo(title: 'Info cheval', icon: Icons.directions_car),
+  const _HorseInfo(title: 'Planning', icon: Icons.directions_bike),
+  const _HorseInfo(title: 'Futur rdv', icon: Icons.directions_boat),
+  const _HorseInfo(title: 'Ancien rdv', icon: Icons.directions_bus),
+  const _HorseInfo(title: 'Pension', icon: Icons.directions_railway),
+];
+
+
 class _HorseInfoCard extends StatelessWidget {
   const _HorseInfoCard({ Key key, this.choice }) : super(key: key);
 
@@ -97,17 +106,38 @@ class _HorseInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle textStyle = Theme.of(context).textTheme.display1;
-    return new Card(
-      color: Colors.white,
-      child: new Center(
-        child: new Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            new Icon(choice.icon, size: 128.0, color: textStyle.color),
-            new Text(choice.title, style: textStyle),
-          ],
-        ),
+    return new ListView(
+          //mainAxisSize: MainAxisSize.min,
+          //crossAxisAlignment: CrossAxisAlignment.center,
+          children: ex.map((e) => new ExampleWidget(e.title)).toList()
+        );
+  }
+}
+
+
+class ExampleWidget extends StatefulWidget {
+  ExampleWidget(this.title, {Key key}) : super(key: key);
+
+  final String title;
+
+  @override
+  _ExampleWidgetState createState() => new _ExampleWidgetState(this.title);
+}
+
+/// State for [ExampleWidget] widgets.
+class _ExampleWidgetState extends State<ExampleWidget> {
+  _ExampleWidgetState(this.title);
+
+  final String title;
+  final TextEditingController _controller = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return new TextField(
+      controller: _controller,
+      decoration: new InputDecoration(
+        labelText: this.title,
+        hintText: 'Type something'
       ),
     );
   }
