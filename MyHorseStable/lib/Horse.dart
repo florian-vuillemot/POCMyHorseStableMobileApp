@@ -34,6 +34,14 @@ class _HorseAppBarBottomSampleState extends State<_HorseAppBarBottomSample> with
     _tabController.animateTo(newIndex);
   }
 
+  List<Widget> _toShow() {
+    return choices.map((_HorseInfo choice) {
+      return new Padding(
+        padding: const EdgeInsets.all(3.0),
+        child: new _HorseInfoCard(choice: choice),
+      );
+    }).toList();
+  }
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -64,12 +72,7 @@ class _HorseAppBarBottomSampleState extends State<_HorseAppBarBottomSample> with
         ),
         body: new TabBarView(
           controller: _tabController,
-          children: choices.map((_HorseInfo choice) {
-            return new Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: new _HorseInfoCard(choice: choice),
-            );
-          }).toList()
+          children: _toShow()
         )
       );
   }
@@ -95,6 +98,7 @@ const List<_HorseInfo> ex = const <_HorseInfo>[
   const _HorseInfo(title: 'Futur rdv', icon: Icons.directions_boat),
   const _HorseInfo(title: 'Ancien rdv', icon: Icons.directions_bus),
   const _HorseInfo(title: 'Pension', icon: Icons.directions_railway),
+  const _HorseInfo(title: '', icon: Icons.directions_railway),
 ];
 
 
@@ -105,15 +109,11 @@ class _HorseInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle textStyle = Theme.of(context).textTheme.display1;
     return new ListView(
-          //mainAxisSize: MainAxisSize.min,
-          //crossAxisAlignment: CrossAxisAlignment.center,
           children: ex.map((e) => new ExampleWidget(e.title)).toList()
         );
   }
 }
-
 
 class ExampleWidget extends StatefulWidget {
   ExampleWidget(this.title, {Key key}) : super(key: key);
@@ -131,14 +131,31 @@ class _ExampleWidgetState extends State<ExampleWidget> {
   final String title;
   final TextEditingController _controller = new TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _makeButton(){
+    return new Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: new RaisedButton(
+          color: const Color(0xFF42A5F5),
+          onPressed: () {
+            print("push");
+          },
+          child: new Text('Valider'),
+          )
+      );
+  }
+
+  Widget _makeTextField(){
     return new TextField(
       controller: _controller,
       decoration: new InputDecoration(
-        labelText: this.title,
-        hintText: 'Type something'
+          labelText: this.title,
+          hintText: 'Type something'
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return this.title.isEmpty ? _makeButton() : _makeTextField();
   }
 }
