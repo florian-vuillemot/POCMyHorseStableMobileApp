@@ -33,6 +33,8 @@ flutter:
     - images/horse.png
     - images/hammer.png
     - images/calendar.png
+    - images/done.png
+    - images/cancel.png
 
 
   # To add assets to your application, add an assets section, like this:
