@@ -191,7 +191,7 @@ class _HorseInfoCard extends StatelessWidget {
   _HorseInfoCard({ Key key }) : super(key: key);
 
   final choice = [
-    new ExampleWidget("Nom"), new ExampleWidget("Date de naissance")
+    new ExampleWidget("Nom"), new ExampleWidget("date")
   ];
 
   @override
@@ -217,6 +217,7 @@ class _ExampleWidgetState extends State<ExampleWidget> {
 
   final String title;
   final TextEditingController _controller = new TextEditingController();
+  DateTime birthdate;
 
   Widget _makeButton(){
     return new Padding(
@@ -239,10 +240,45 @@ class _ExampleWidgetState extends State<ExampleWidget> {
           hintText: 'Type something'
       ),
     );
+    }
+
+  void onChanged(DateTime value) {
+    setState(() {
+      this.birthdate = value;
+    });
+  }
+
+  Widget _datePicker(){
+    final DateTime dateTime = new DateTime.now();
+    final date = new DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final time = new TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+
+    return new FlatButton(
+          child: new Text(
+              null == this.birthdate ? "Clicker pour entrer la date de naissance" : "Anniversaire: " + this.birthdate.day.toString() + "/" + this.birthdate.month.toString() + "/" + this.birthdate.year.toString()
+          ),
+          onPressed: () {
+            showDatePicker(
+              context: context,
+              initialDate: date,
+              firstDate: new DateTime(1950, 1, 1),
+              lastDate: new DateTime.now()
+            )
+            .then((DateTime value) {
+              if (null != value) {
+                onChanged(new DateTime(
+                    value.year, value.month, value.day, time.hour,
+                    time.minute));
+              }
+            });
+          },
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (this.title == "date")
+      return _datePicker();
     return this.title.isEmpty ? _makeButton() : _makeTextField();
   }
 }
