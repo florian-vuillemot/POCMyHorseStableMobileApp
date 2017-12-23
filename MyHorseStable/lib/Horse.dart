@@ -109,6 +109,40 @@ class _PensionInfoCard extends StatefulWidget {
   _PensionInfoCardState createState() => new _PensionInfoCardState();
 }
 
+class MaleOrFemale extends StatefulWidget {
+  MaleOrFemale(this.title, {Key key}) : super(key: key);
+
+  final String title;
+
+  @override
+  _maleOrFemale createState() => new _maleOrFemale();
+}
+
+class _maleOrFemale extends State<MaleOrFemale> {
+  _maleOrFemale();
+
+  bool isMal = false;
+
+  void _handleSwitch(bool newValue) {
+    setState(() {
+      isMal = newValue;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              new Text(isMal ? "Male" : "Femelle"),
+              new Switch(
+                  value: isMal,
+                  onChanged: _handleSwitch
+              )]
+        );
+  }
+}
+
 class _PensionInfoCardState extends State<_PensionInfoCard> {
   _PensionInfoCardState();
 
@@ -191,8 +225,15 @@ class _HorseInfoCard extends StatelessWidget {
   _HorseInfoCard({ Key key }) : super(key: key);
 
   final choice = [
-    new ExampleWidget("Nom"), new ExampleWidget("date")
+    new ExampleWidget("Nom"), new ExampleWidget("date"), new MaleOrFemale("Sexe"),
+    new ExampleWidget("race"), new ExampleWidget("Nationalité")
   ];
+
+  final t = new ListTile(
+    leading: const Icon(Icons.event_seat),
+    title: const Text('The seat for the narrator'),
+    onTap: (){print("Tape sur moi");},
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +249,53 @@ class ExampleWidget extends StatefulWidget {
   final String title;
 
   @override
-  _ExampleWidgetState createState() => new _ExampleWidgetState(this.title);
+  State<ExampleWidget> createState() {
+    if (title == "race"){
+      return new _RaceHorse();
+    }
+    return new _ExampleWidgetState(this.title);
+  }
+}
+
+class HorseRace{
+  const HorseRace({this.name});
+
+  final String name;
+}
+
+class _RaceHorse extends State<ExampleWidget>
+{
+  HorseRace race;
+  final List<HorseRace> races = [
+    const HorseRace(name: "Race 1"),
+    const HorseRace(name: "Race 2"),
+  ];
+
+  void _handleState(HorseRace result){
+    print("handle");
+    setState((){
+      this.race = result;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Row(
+      children: [
+        new Text("Race"),
+        new PopupMenuButton<HorseRace>(
+          onSelected: _handleState,
+          itemBuilder: (BuildContext context) =>
+            races.map((HorseRace r) =>
+              new PopupMenuItem<HorseRace>(
+                child: new Text(r.name),
+              )
+            ).toList()
+        ),
+        new Text(null == race ? "" : race.name)
+      ]
+    );
+  }
 }
 
 /// State for [ExampleWidget] widgets.
