@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'ListHorseInfo.dart';
+import 'HorseInfo.dart';
+import 'LoadPicture.dart';
 
 class Horse extends StatelessWidget {
   @override
@@ -78,30 +81,18 @@ class _HorseAppBarBottomSampleState extends State<_HorseAppBarBottomSample> with
   }
 }
 
-class _HorseInfo {
-  _HorseInfo({ this.title, this.icon, this.widget });
-  final String title;
-  final IconData icon;
+class _HorseInfo extends HorseInfo{
+  _HorseInfo({ name, this.widget }): super (name: name);
+
   final Widget widget;
 }
 
 List<_HorseInfo> choices = <_HorseInfo>[
-  new _HorseInfo(title: 'Info cheval', icon: Icons.directions_car, widget: new _HorseInfoCard()),
-  new _HorseInfo(title: 'Planning', icon: Icons.directions_bike, widget: new _PlanningInfoCard()),
-  new _HorseInfo(title: 'Futur rdv', icon: Icons.directions_boat, widget: new _NextAppointmentInfoCard()),
-  new _HorseInfo(title: 'Ancien rdv', icon: Icons.directions_bus, widget: new _PreviousAppointmentInfoCard()),
-  new _HorseInfo(title: 'Pension', icon: Icons.directions_railway, widget: new _PensionInfoCard()),
+  new _HorseInfo(name: 'Photo cheval', widget: new _LoadPicture()),
+  new _HorseInfo(name: 'Info cheval', widget: new _HorseInfoCard()),
+  new _HorseInfo(name: 'Planning', widget: new _PlanningInfoCard()),
+  new _HorseInfo(name: 'Pension', widget: new _PensionInfoCard()),
 ];
-
-List<_HorseInfo> ex = <_HorseInfo>[
-  new _HorseInfo(title: 'Info cheval', icon: Icons.directions_car),
-  new _HorseInfo(title: 'Planning', icon: Icons.directions_bike),
-  new _HorseInfo(title: 'Futur rdv', icon: Icons.directions_boat),
-  new _HorseInfo(title: 'Ancien rdv', icon: Icons.directions_bus),
-  new _HorseInfo(title: 'Pension', icon: Icons.directions_railway),
-  new _HorseInfo(title: '', icon: Icons.directions_railway),
-];
-
 
 
 class _PensionInfoCard extends StatefulWidget {
@@ -181,33 +172,6 @@ class _PensionInfoCardState extends State<_PensionInfoCard> {
   }
 }
 
-class _PreviousAppointmentInfoCard extends StatelessWidget {
-  _PreviousAppointmentInfoCard({ Key key }) : super(key: key);
-
-  final appointments = ["Rdv1", "Rdv2"];
-
-  @override
-  Widget build(BuildContext context) {
-    return new ListView(
-        children: appointments.map((txt) => new Text(txt)).toList()
-    );
-  }
-}
-
-
-class _NextAppointmentInfoCard extends StatelessWidget {
-  _NextAppointmentInfoCard({ Key key }) : super(key: key);
-
-  final appointments = ["Rdv1", "Rdv2"];
-
-  @override
-  Widget build(BuildContext context) {
-    return new ListView(
-        children: appointments.map((txt) => new Text(txt)).toList()
-    );
-  }
-}
-
 class _PlanningInfoCard extends StatelessWidget {
   _PlanningInfoCard({ Key key }) : super(key: key);
 
@@ -221,61 +185,50 @@ class _PlanningInfoCard extends StatelessWidget {
   }
 }
 
+class _LoadPicture extends StatelessWidget {
+  _LoadPicture({Key key}): super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return new LoadPicture("Aucune photo pour ce cheval");
+  }
+}
+
 class _HorseInfoCard extends StatelessWidget {
   _HorseInfoCard({ Key key }) : super(key: key);
 
   final choice = [
-    new ExampleWidget("Nom"), new ExampleWidget("date"), new MaleOrFemale("Sexe"),
-    new ExampleWidget("race"), new ExampleWidget("nationality")
+    new DisplayHorseInfoWidget("Nom"), new DisplayHorseInfoWidget("date"),
+    new MaleOrFemale("Sexe"), new DisplayHorseInfoWidget("race"), new DisplayHorseInfoWidget("nationality")
   ];
-
-  final t = new ListTile(
-    leading: const Icon(Icons.event_seat),
-    title: const Text('The seat for the narrator'),
-    onTap: (){print("Tape sur moi");},
-  );
 
   @override
   Widget build(BuildContext context) {
     return new ListView(
-          children: choice//.map((e) => new ExampleWidget(e)).toList()
+          children: choice
         );
   }
 }
 
-class HorseInfoListable{
-  const HorseInfoListable({this.name});
-
-  final String name;
-}
-
-class HorseRace extends HorseInfoListable{
-  const HorseRace({name}): super(name: name);
-}
-class Nationality extends HorseInfoListable {
-  const Nationality({name}): super(name: name);
-}
-
-
-class ExampleWidget extends StatefulWidget {
-  ExampleWidget(this.title, {Key key}) : super(key: key);
+class DisplayHorseInfoWidget extends ListHorseInfoPrimitive {
+  DisplayHorseInfoWidget(this.title, {Key key}) : super(key: key);
 
   final String title;
 
   @override
-  State<ExampleWidget> createState() {
+  State<ListHorseInfoPrimitive> createState() {
     if (title == "race"){
-      return new _ListHorseInfo(
+      return new ListHorseInfo(
           race: null,
           races: [
-            new HorseRace(name: "Race number 1"),
-            new HorseRace(name: "Race number 2"),
+            new Race(name: "Race number 1"),
+            new Race(name: "Race number 2"),
           ],
           name: "Race"
       );
     }
     if (title == "nationality"){
-      return new _ListHorseInfo(
+      return new ListHorseInfo(
           race: null,
           races: [
             new Nationality(name: "Nat number 1"),
@@ -285,71 +238,13 @@ class ExampleWidget extends StatefulWidget {
       );
     }
 
-    return new _ExampleWidgetState(this.title);
+    return new _DisplayHorseInfoWidget(this.title);
   }
 }
 
-class _ListHorseInfo<T extends HorseInfoListable> extends State<ExampleWidget>
-{
-  _ListHorseInfo({this.race, this.races, this.name});
-
-  T race;
-  final List<T> races;
-  final String name;
-
-  void _handleState(T result){
-    setState((){
-      race = result;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Row(
-      children: [
-        new Text(name),
-        new _RaceListBox(race: race, races: races, onChanged: _handleState),
-        new Text(null == race ? "" : race.name),
-/*
-        new Text("Race"),
-
-        new Text(null == race ? "" : race.name)
-        */
-      ]
-    );
-  }
-}
-
-class _RaceListBox<T extends HorseInfoListable> extends StatelessWidget {
-  _RaceListBox({Key key, this.race, this.races, this.onChanged}) : super(key: key);
-
-  final T race;
-  final List<T> races;
-  final ValueChanged<T> onChanged;
-
-  void _handleState(T race){
-    onChanged(race);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new PopupMenuButton<T>(
-      icon: const Icon(Icons.arrow_drop_down),
-      onSelected: _handleState,
-      itemBuilder: (BuildContext context) =>
-          races.map((T r) =>
-          new PopupMenuItem<T>(
-            value: r,
-            child: new Text(r.name),
-          )
-          ).toList()
-    );
-  }
-}
-
-/// State for [ExampleWidget] widgets.
-class _ExampleWidgetState extends State<ExampleWidget> {
-  _ExampleWidgetState(this.title);
+/// State for [DisplayHorseInfoWidget] widgets.
+class _DisplayHorseInfoWidget extends State<DisplayHorseInfoWidget> {
+  _DisplayHorseInfoWidget(this.title);
 
   final String title;
   final TextEditingController _controller = new TextEditingController();
@@ -376,7 +271,7 @@ class _ExampleWidgetState extends State<ExampleWidget> {
           hintText: 'Type something'
       ),
     );
-    }
+  }
 
   void onChanged(DateTime value) {
     setState(() {
@@ -418,50 +313,3 @@ class _ExampleWidgetState extends State<ExampleWidget> {
     return this.title.isEmpty ? _makeButton() : _makeTextField();
   }
 }
-
-/*
-class ExampleWidget extends StatefulWidget {
-  ExampleWidget(this.title, {Key key}) : super(key: key);
-
-  final String title;
-
-  @override
-  _ExampleWidgetState createState() => new _ExampleWidgetState(this.title);
-}
-
-/// State for [ExampleWidget] widgets.
-class _ExampleWidgetState extends State<ExampleWidget> {
-  _ExampleWidgetState(this.title);
-
-  final String title;
-  final TextEditingController _controller = new TextEditingController();
-
-  Widget _makeButton(){
-    return new Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: new RaisedButton(
-          color: const Color(0xFF42A5F5),
-          onPressed: () {
-            print("push");
-          },
-          child: new Text('Valider'),
-        )
-    );
-  }
-
-  Widget _makeTextField(){
-    return new TextField(
-      controller: _controller,
-      decoration: new InputDecoration(
-          labelText: this.title,
-          hintText: 'Type something'
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return this.title.isEmpty ? _makeButton() : _makeTextField();
-  }
-}
-*/

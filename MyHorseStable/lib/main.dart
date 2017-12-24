@@ -69,7 +69,7 @@ class Window {
 /// List of all window to show
 List<Window> windows = <Window>[
   new Window(title: 'Chevaux', icon: 'images/horse.png', widget: new Horse()),
-  new Window(title: 'Professionnelles', icon: 'images/hammer.png', widget: new LoadPicture()),
+  new Window(title: 'Professionnelles', icon: 'images/hammer.png', widget: new LoadPicture("Selectionner photo")),
   new Window(title: 'Calendrier', icon: 'images/calendar.png', widget: new Horses()),
 ];
 

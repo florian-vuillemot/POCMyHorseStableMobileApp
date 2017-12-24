@@ -5,23 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class LoadPicture extends StatelessWidget {
-  const LoadPicture();
+  const LoadPicture(this.fieldNoImageSelected);
+
+  final String fieldNoImageSelected;
 
   @override
   Widget build(BuildContext context) {
-    return new _LoaderPictureWrapper();
+    return new _LoaderPictureWrapper(fieldNoImageSelected: fieldNoImageSelected);
   }
 }
 
 class _LoaderPictureWrapper extends StatefulWidget {
-  _LoaderPictureWrapper({Key key}) : super(key: key);
+  _LoaderPictureWrapper({Key key, this.fieldNoImageSelected}) : super(key: key);
+
+  final String fieldNoImageSelected;
 
   @override
-  _LoaderPicture createState() => new _LoaderPicture();
+  _LoaderPicture createState() => new _LoaderPicture(fieldNoImageSelected: fieldNoImageSelected);
 }
 
 class _LoaderPicture extends State<_LoaderPictureWrapper> {
   Future<File> _imageFile;
+  final String fieldNoImageSelected;
+
+  _LoaderPicture({this.fieldNoImageSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,7 @@ class _LoaderPicture extends State<_LoaderPictureWrapper> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return new Image.file(snapshot.data);
                 } else {
-                  return const Text('You have not yet picked an image.');
+                  return new Text(fieldNoImageSelected);
                 }
               })),
       floatingActionButton: new FloatingActionButton(
