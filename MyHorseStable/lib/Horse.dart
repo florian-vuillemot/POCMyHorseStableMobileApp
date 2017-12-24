@@ -115,11 +115,11 @@ class MaleOrFemale extends StatefulWidget {
   final String title;
 
   @override
-  _maleOrFemale createState() => new _maleOrFemale();
+  _MaleOrFemale createState() => new _MaleOrFemale();
 }
 
-class _maleOrFemale extends State<MaleOrFemale> {
-  _maleOrFemale();
+class _MaleOrFemale extends State<MaleOrFemale> {
+  _MaleOrFemale();
 
   bool isMal = false;
 
@@ -226,7 +226,7 @@ class _HorseInfoCard extends StatelessWidget {
 
   final choice = [
     new ExampleWidget("Nom"), new ExampleWidget("date"), new MaleOrFemale("Sexe"),
-    new ExampleWidget("race"), new ExampleWidget("Nationalité")
+    new ExampleWidget("race"), new ExampleWidget("nationality")
   ];
 
   final t = new ListTile(
@@ -243,6 +243,20 @@ class _HorseInfoCard extends StatelessWidget {
   }
 }
 
+class HorseInfoListable{
+  const HorseInfoListable({this.name});
+
+  final String name;
+}
+
+class HorseRace extends HorseInfoListable{
+  const HorseRace({name}): super(name: name);
+}
+class Nationality extends HorseInfoListable {
+  const Nationality({name}): super(name: name);
+}
+
+
 class ExampleWidget extends StatefulWidget {
   ExampleWidget(this.title, {Key key}) : super(key: key);
 
@@ -251,30 +265,41 @@ class ExampleWidget extends StatefulWidget {
   @override
   State<ExampleWidget> createState() {
     if (title == "race"){
-      return new _RaceHorse();
+      return new _ListHorseInfo(
+          race: null,
+          races: [
+            new HorseRace(name: "Race number 1"),
+            new HorseRace(name: "Race number 2"),
+          ],
+          name: "Race"
+      );
     }
+    if (title == "nationality"){
+      return new _ListHorseInfo(
+          race: null,
+          races: [
+            new Nationality(name: "Nat number 1"),
+            new Nationality(name: "Nat number 2"),
+          ],
+          name: "Nationality"
+      );
+    }
+
     return new _ExampleWidgetState(this.title);
   }
 }
 
-class HorseRace{
-  const HorseRace({this.name});
-
-  final String name;
-}
-
-class _RaceHorse extends State<ExampleWidget>
+class _ListHorseInfo<T extends HorseInfoListable> extends State<ExampleWidget>
 {
-  HorseRace race;
-  final List<HorseRace> races = [
-    const HorseRace(name: "Race 1"),
-    const HorseRace(name: "Race 2"),
-  ];
+  _ListHorseInfo({this.race, this.races, this.name});
 
-  void _handleState(HorseRace result){
-    print("handle");
+  T race;
+  final List<T> races;
+  final String name;
+
+  void _handleState(T result){
     setState((){
-      this.race = result;
+      race = result;
     });
   }
 
@@ -282,18 +307,42 @@ class _RaceHorse extends State<ExampleWidget>
   Widget build(BuildContext context) {
     return new Row(
       children: [
+        new Text(name),
+        new _RaceListBox(race: race, races: races, onChanged: _handleState),
+        new Text(null == race ? "" : race.name),
+/*
         new Text("Race"),
-        new PopupMenuButton<HorseRace>(
-          onSelected: _handleState,
-          itemBuilder: (BuildContext context) =>
-            races.map((HorseRace r) =>
-              new PopupMenuItem<HorseRace>(
-                child: new Text(r.name),
-              )
-            ).toList()
-        ),
+
         new Text(null == race ? "" : race.name)
+        */
       ]
+    );
+  }
+}
+
+class _RaceListBox<T extends HorseInfoListable> extends StatelessWidget {
+  _RaceListBox({Key key, this.race, this.races, this.onChanged}) : super(key: key);
+
+  final T race;
+  final List<T> races;
+  final ValueChanged<T> onChanged;
+
+  void _handleState(T race){
+    onChanged(race);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new PopupMenuButton<T>(
+      icon: const Icon(Icons.arrow_drop_down),
+      onSelected: _handleState,
+      itemBuilder: (BuildContext context) =>
+          races.map((T r) =>
+          new PopupMenuItem<T>(
+            value: r,
+            child: new Text(r.name),
+          )
+          ).toList()
     );
   }
 }
