@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'ListHorseInfo.dart';
 import 'HorseInfo.dart';
 
-enum _HorseInfoCardChoice {Name, Sexe, Race, Date, Nationality, Notes}
+enum _HorseInfoCardChoice {
+  Name, // Text field for the horse name
+  Sexe, // Field with switch for male/female choice
+  Race, // List field for race choice
+  Date, // Date field for the birthdate
+  Nationality, // List Field for the nationality choice
+  Notes // Text field for name
+}
 
 class HorseInfoCard extends StatelessWidget {
   HorseInfoCard({ Key key }) : super(key: key);
@@ -27,29 +34,23 @@ class HorseInfoCard extends StatelessWidget {
 class DisplayHorseInfoWidget extends ListHorseInfoPrimitive {
   DisplayHorseInfoWidget(this.type, {Key key, this.title, this.nbLine}) : super(key: key);
 
-  final _HorseInfoCardChoice type;
-  final String title;
-  final nbLine;
+  final _HorseInfoCardChoice type; // Type of field
+  final String title; // Text field title
+  final nbLine; // Number line for text field
 
   @override
   State<ListHorseInfoPrimitive> createState() {
     if (type == _HorseInfoCardChoice.Race){
       return new ListHorseInfo(
           race: null,
-          races: [
-            new Race(name: "Race number 1"),
-            new Race(name: "Race number 2"),
-          ],
+          races: [new Race(name: "Race number 1"), new Race(name: "Race number 2")],
           name: "Race"
       );
     }
     if (type == _HorseInfoCardChoice.Nationality){
       return new ListHorseInfo(
           race: null,
-          races: [
-            new Nationality(name: "Nat number 1"),
-            new Nationality(name: "Nat number 2"),
-          ],
+          races: [new Nationality(name: "Nat number 1"), new Nationality(name: "Nat number 2")],
           name: "Nationality"
       );
     }
@@ -62,12 +63,14 @@ class DisplayHorseInfoWidget extends ListHorseInfoPrimitive {
 class _DisplayHorseInfoWidget extends State<DisplayHorseInfoWidget> {
   _DisplayHorseInfoWidget(this.type, {this.title, this.nbLine});
 
-  final _HorseInfoCardChoice type;
-  final String title;
-  final TextEditingController _controller = new TextEditingController();
+  final _HorseInfoCardChoice type; // Type of information we want to retreive
+
+  final String title; // Text field title
+  int nbLine; // Number line for the text field
+  final TextEditingController _controller = new TextEditingController(); // Text field composent
+
   bool isMal = false;
   DateTime birthdate;
-  int nbLine;
 
   Widget _makeTextField(){
     return new TextField(
@@ -96,16 +99,11 @@ class _DisplayHorseInfoWidget extends State<DisplayHorseInfoWidget> {
       ),
       onPressed: () {
         showDatePicker(
-            context: context,
-            initialDate: date,
-            firstDate: new DateTime(1950, 1, 1),
-            lastDate: new DateTime.now()
+            context: context, initialDate: date, firstDate: new DateTime(1950, 1, 1), lastDate: new DateTime.now()
         )
             .then((DateTime value) {
           if (null != value) {
-            onChanged(new DateTime(
-                value.year, value.month, value.day, time.hour,
-                time.minute));
+            onChanged(new DateTime(value.year, value.month, value.day, time.hour,time.minute));
           }
         });
       },
@@ -136,41 +134,6 @@ class _DisplayHorseInfoWidget extends State<DisplayHorseInfoWidget> {
       return _datePicker();
     if (type == _HorseInfoCardChoice.Sexe)
       return _maleOrFemal();
-
     return _makeTextField();
-  }
-}
-
-class MaleOrFemale extends StatefulWidget {
-  MaleOrFemale(this.title, {Key key}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MaleOrFemale createState() => new _MaleOrFemale();
-}
-
-class _MaleOrFemale extends State<MaleOrFemale> {
-  _MaleOrFemale();
-
-  bool isMal = false;
-
-  void _handleSwitch(bool newValue) {
-    setState(() {
-      isMal = newValue;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          new Text(isMal ? "Male" : "Femelle"),
-          new Switch(
-              value: isMal,
-              onChanged: _handleSwitch
-          )]
-    );
   }
 }
