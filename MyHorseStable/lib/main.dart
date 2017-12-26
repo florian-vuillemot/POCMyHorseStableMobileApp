@@ -47,10 +47,7 @@ class _MainContainerState extends State<MainContainer> {
             ),
           ],
         ),
-        body: new Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: _selectedChoice.widget //new MainContainer(choice: _selectedChoice),
-        ),
+        body: _selectedChoice.widget
       ),
     );
   }
