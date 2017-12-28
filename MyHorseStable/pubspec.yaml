@@ -8,6 +8,7 @@ dependencies:
     git:
       url: git@github.com:flutter/plugins.git
       path: packages/image_picker
+  intl: "^0.15.2"
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'HorseInfo.dart';
 
 /// Horses container
 class Horses extends StatelessWidget {
@@ -11,21 +12,6 @@ class Horses extends StatelessWidget {
           itemCount: datas.length,
     );
   }
-}
-
-/// Information on cares, should be create and return by API/Database.
-class CareInfo {
-  const CareInfo(this.type, [this.cares = const <String>[]]);
-  final String type;
-  final List<String> cares;
-}
-
-/// Information on horses, should be create and return by API/Database.
-class HorseInfo {
-  HorseInfo(this.name, [this.nextCare = const CareInfo("Next"), this.previousCare = const CareInfo("Previous")]);
-  final String name;
-  final CareInfo nextCare;
-  final CareInfo previousCare;
 }
 
 

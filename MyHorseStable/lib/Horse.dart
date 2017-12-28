@@ -84,14 +84,14 @@ class _HorseAppBarBottomSampleState extends State<_HorseAppBarBottomSample> with
 }
 
 class _HorseInfo extends HorseInfo{
-  _HorseInfo({ name, this.widget }): super (name: name);
+  _HorseInfo(name, this.widget): super (name);
 
   final Widget widget;
 }
 
 List<_HorseInfo> choices = <_HorseInfo>[
-  new _HorseInfo(name: 'Photo cheval', widget: new LoadPictureCard()),
-  new _HorseInfo(name: 'Info cheval', widget: new HorseInfoCard()),
-  new _HorseInfo(name: 'Planning', widget: new PlanningInfoCard()),
-  new _HorseInfo(name: 'Pension', widget: new PensionInfoCard()),
+  new _HorseInfo('Photo cheval', new LoadPictureCard()),
+  new _HorseInfo('Info cheval', new HorseInfoCard()),
+  new _HorseInfo('Planning', new PlanningInfoCard()),
+  new _HorseInfo('Pension', new PensionInfoCard()),
 ];
